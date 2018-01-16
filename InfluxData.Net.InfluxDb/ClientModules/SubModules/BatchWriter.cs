@@ -19,6 +19,9 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         private bool _isRunning;
         private long _maxPointsPerBatch;
 
+        private int _maxPointsInCollection = int.MaxValue;
+        public int MaxPointsInCollection { get { return _maxPointsInCollection; } set { _maxPointsInCollection = value; } }
+
         /// <summary>
         /// Concurrent readings queue.
         /// <see cref="http://www.codethinked.com/blockingcollection-and-iproducerconsumercollection"/>
@@ -85,6 +88,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         /// <param name="point">Point to write.</param>
         public virtual void AddPoint(Point point)
         {
+            if (_pointCollection.Count >= _maxPointsInCollection)
+            {
+                return;
+            }
+
             _pointCollection.Add(point);
         }
 
@@ -98,6 +106,10 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
         {
             foreach (var point in points)
             {
+                if (_pointCollection.Count >= _maxPointsInCollection)
+                {
+                    return;
+                }
                 _pointCollection.Add(point);
             }
         }
