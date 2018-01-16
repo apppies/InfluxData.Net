@@ -179,8 +179,11 @@ namespace InfluxData.Net.InfluxDb.ClientSubModules
             {
                 await _basicClientModule.WriteAsync(points, _dbName, _retentionPolicy, _precision).ContinueWith(p =>
                 {
-                    RaiseError(p.Exception);
-                }, TaskContinuationOptions.OnlyOnFaulted).ConfigureAwait(false);
+                    if (p.IsFaulted)
+                    {
+                        RaiseError(p.Exception);
+                    }
+                }).ConfigureAwait(false);
             }
         }
 
