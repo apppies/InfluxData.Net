@@ -85,8 +85,8 @@ namespace InfluxData.Net.Common.RequestClients
             HandleIfErrorResponse(response.StatusCode, responseContent);
 
 #if DEBUG
-            Debug.WriteLine("[Response] {0}", response.ToJson());
-            Debug.WriteLine("[ResponseData] {0}", responseContent);
+            Debug.WriteLine($"[Response] {response.ToJson()}");
+            Debug.WriteLine($"[ResponseData] {responseContent}");
 #endif
 
             return new InfluxDataApiResponse(response.StatusCode, responseContent);
@@ -105,13 +105,12 @@ namespace InfluxData.Net.Common.RequestClients
             var request = BuildRequest(method, content, uri);
 
 #if DEBUG
-            Debug.WriteLine("[Request] {0}", request.ToJson());
+            Debug.WriteLine($"[Request] { request.ToJson()}");
             if (content != null)
             {
-                Debug.WriteLine("[RequestData] {0}", content.ReadAsStringAsync().Result);
+                Debug.WriteLine($"[RequestData] {content.ReadAsStringAsync().Result}");
             }
 #endif
-
             return await this.Configuration.HttpClient.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
         }
 
